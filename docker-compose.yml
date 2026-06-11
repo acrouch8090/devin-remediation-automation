@@ -1,0 +1,22 @@
+services:
+  remediation:
+    build: .
+    image: devin-remediation-automation
+    ports:
+      - "8000:8000"
+    environment:
+      # Provided via your shell / CI secret store. Required to create real sessions.
+      DEVIN_API_KEY: ${DEVIN_API_KEY:-}
+      DEVIN_API_BASE: ${DEVIN_API_BASE:-https://api.devin.ai/v1}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      TARGET_REPO: ${TARGET_REPO:-acrouch8090/superset}
+      TRIGGER_LABEL: ${TRIGGER_LABEL:-devin-fix}
+      DEFAULT_BASE_BRANCH: ${DEFAULT_BASE_BRANCH:-master}
+      DATABASE_PATH: /app/data/remediation.db
+      POLL_INTERVAL_SECONDS: ${POLL_INTERVAL_SECONDS:-30}
+    volumes:
+      - remediation-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  remediation-data:
